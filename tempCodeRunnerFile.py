@@ -1,8 +1,25 @@
+ha")
+async def solve_captcha_sync(num_requests):
+    return [await cap_monster_client.solve_captcha(recaptcha2request) for _ in range(num_requests)]
 
-# driver.find_element(By.XPATH, '//*[@id="u_q_g_yp"]').send_keys('0788392620') # so dien thoai
+async def solve_captcha_async(num_requests):
+    tasks = [asyncio.create_task(cap_monster_client.solve_captcha(recaptcha2request)) 
+             for _ in range(num_requests)]
+    return await asyncio.gather(*tasks, return_exceptions=True)
 
-# driver.find_element(By.XPATH, '//*[@id="password_step_input"]').send_keys('123456789') # mat khau
-# driver.find_element(By.XPATH, '//*[@id="day"]').send_keys('31') # ngay sinh
-# driver.find_element(By.XPATH, '//*[@id="month"]').send_keys('11') # thang sinh
-# driver.find_element(By.XPATH, '//*[@id="year"]').send_keys('2000') # nam sinh
-# driver.find_element(By.XPATH, '//*[@id="u_q_5_9N"]').send_keys('true') # gioi tinh (nam)
+api_key='dfb46ea699f1ead2bb5a218f37634279'
+urlWeb = 'https://www.facebook.com/checkpoint/1501092823525282/?next=https%3A%2F%2Fwww.facebook.com%2F'
+site_key = '6Lc9qjcUAAAAADTnJq5kJMjN9aD1lxpRLMnCS2TR'
+# key = os.getenv(api_key)
+client_options = ClientOptions(api_key=api_key)
+cap_monster_client = CapMonsterClient(options=client_options)
+recaptcha2request = RecaptchaV2EnterpriseProxylessRequest(websiteUrl=urlWeb, websiteKey=site_key)
+nums = 1
+sync_start = time.time()
+responses = asyncio.run(solve_captcha_sync(nums))
+driver.switch_to.frame("captcha-recaptcha")
+text = driver.find_element(By.XPATH, '/html/body/div[1]/div/textarea')
+driver.execute_script("arguments[0].style=''", text)
+print("Recaptcha: ", responses[0]['gRecaptchaResponse'])
+driver.execute_script("arguments[0].innerHTML=arguments[1]", text, responses[0]['gRecaptchaResponse'])
+driver.switch_to.
