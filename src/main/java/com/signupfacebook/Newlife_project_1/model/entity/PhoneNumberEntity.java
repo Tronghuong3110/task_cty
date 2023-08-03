@@ -1,7 +1,7 @@
 package com.signupfacebook.Newlife_project_1.model.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 
 @Entity
@@ -19,7 +19,11 @@ public class PhoneNumberEntity {
 
 //    Relation ship
     @OneToMany(mappedBy = "phoneNumberEntity")
-    ArrayList<SmsEntity> listSms = new ArrayList<>();
+    List<SmsEntity> listSms;
+
+    @ManyToOne
+    @JoinColumn(name = "listSim_id")
+    private ListSimEntity listSim;
 
     public String getId() {
         return id;
@@ -53,11 +57,19 @@ public class PhoneNumberEntity {
         this.changeDate = changeDate;
     }
 
-    public ArrayList<SmsEntity> getListSms() {
+    public List<SmsEntity> getListSms() {
         return listSms;
     }
 
-    public void setListSms(ArrayList<SmsEntity> listSms) {
+    public void setListSms(List<SmsEntity> listSms) {
         this.listSms = listSms;
+    }
+
+    public ListSimEntity getListSim() {
+        return listSim;
+    }
+
+    public void setListSim(ListSimEntity listSim) {
+        this.listSim = listSim;
     }
 }
