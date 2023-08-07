@@ -17,7 +17,6 @@ import java.util.*;
 @CrossOrigin(origins = "*")
 public class PhoneNumberController {
 
-    private final String PYTHON_API_ACTION = "http://127.0.0.1:8000/api/action/";
 
     @Autowired
     private IPhoneNumberService phoneNumberService;
@@ -59,17 +58,4 @@ public class PhoneNumberController {
         return ResponseEntity.ok(message);
     }
 
-    @GetMapping("/action")
-    public String test(@RequestParam("action") String action) {
-        String url_pause = PYTHON_API_ACTION + "?action=";
-        if(action.equals("pause")) {
-            ResponseEntity<String> response = restTemplate.getForEntity(url_pause + action, String.class);
-            return response.toString();
-        }
-        else if(action.equals("continue")) {
-            ResponseEntity<String> response = restTemplate.getForEntity(url_pause + action, String.class);
-            return response.toString();
-        }
-        return null;
-    }
 }

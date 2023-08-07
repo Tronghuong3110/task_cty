@@ -17,7 +17,9 @@ import java.util.*;
 @CrossOrigin(origins = "*")
 public class HomeController {
 
-    private final String PYTHON_API = "http://127.0.0.1:8000/api/start";
+    private final String PYTHON_API_START = "http://127.0.0.1:8000/api/start";
+    private final String PYTHON_API_FINISH = "http://127.0.0.1:8000/api/finish";
+    private final String PYTHON_API_ACTION = "http://127.0.0.1:8000/api/action/";
     private ProcessData processData = null;
     private Integer totalPhoneNumber = null;
 
@@ -31,18 +33,20 @@ public class HomeController {
     @GetMapping("/play") // start program
     public String callPythonApi(@RequestParam("idConfig") String idConfig){
         ConfigEntity configEntity = configService.findById(idConfig);
-        if(configEntity != null) {
+        try{
             List<Integer> listPhoneNumber = new ArrayList<>();
             List<PhoneNumberEntity> numberList = configEntity.getListSimEntity().getListPhoneNumber();
             for(PhoneNumberEntity phoneNumberEntity : numberList) {
                 listPhoneNumber.add(phoneNumberEntity.getPhoneNumber());
             }
             totalPhoneNumber = listPhoneNumber.size();
-            String urlApi = PYTHON_API + "?profilePath=" + configEntity.getProfilePath() + "&listPhoneNumber=" + listPhoneNumber.toString();
+            String urlApi = PYTHON_API_START + "?profilePath=" + configEntity.getProfilePath() + "&listPhoneNumber=" + listPhoneNumber.toString();
             ResponseEntity<Object> res = restTemplate.getForEntity(urlApi, Object.class);
             return res.toString();
         }
-        return null;
+        catch(NullPointerException nul) {
+            return "Bạn chưa thực hiện cấu hình";
+        }
     }
 
     @PostMapping("/process") // revice progress from api python
@@ -54,9 +58,25 @@ public class HomeController {
     @GetMapping("/process_current") // send progress current to client
     public ProcessData procress_current() {
         if(processData != null) {
-//            System.out.println(this.processData.getCurrent_phoneNumber());
             ProcessData response = processService.sendProcess(processData, totalPhoneNumber);
             return response;
+        }
+        return null;
+    }
+
+    @GetMapping("/action")
+    public String action(@RequestParam("action") String action) {
+        String url = PYTHON_API_ACTION + "?action=";
+        if(action.equals("pause")) {
+            ResponseEntity<String> response = restTemplate.getForEntity(url + action, String.class);
+            return response.toString();
+        }
+        else if(action.equals("continue")) {
+            ResponseEntity<String> response = restTemplate.getForEntity(url + action, String.class);
+            return response.toString();
+        }
+        else {
+            ResponseEntity<String> response = restTemplate.getForEntity(url + action, String.class);
         }
         return null;
     }

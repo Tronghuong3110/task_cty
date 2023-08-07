@@ -18,6 +18,9 @@ public class ListSimEntity {
     private Integer status;
     @Column(name = "note", columnDefinition = "ntext")
     private String note;
+    @Column(name = "name", columnDefinition = "nvarchar(255)")
+    private String name;
+
 
 //    Relationship
     @OneToMany(mappedBy = "listSim")
@@ -80,5 +83,13 @@ public class ListSimEntity {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
