@@ -2,15 +2,26 @@ import time
 import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support import expected_conditions as EC
 
 class SignUp:
-    def __init__(self, phoneNumbers, option):
+    def __init__(self) -> None:
+        pass
+
+    def setValue(self, phoneNumbers, option, action):
         self.phoneNumbers = phoneNumbers
         self.option = option
+        self.action = action
+        self.finish = False
+
+    def stop(self):
+        while(self.action != 1):
+            time.sleep(5)
+
+    def close_browser(self, driver):
+        driver.delete_all_cookies()
+        driver.quit()
 
     # sign up face
     def signupface(self, driver, phoneNumber):
@@ -27,29 +38,46 @@ class SignUp:
         fillOutForm(driver, phoneNumber)
         # click submit form sign up
         print("Sign up account")
+        self.stop()
+        if(self.finish):
+            self.close_browser(driver)
+            return "Đã kết thúc"
         driver.find_element(By.NAME, 'websubmit').click()
+        return ""
 
     # Send progress resolving
-    def sendProgress(self, current_phoneNumber, message):
-        urlJava = "http://localhost:8081/api/progress"
+    def sendProcess(self, current_phoneNumber, message, index, status):
+        urlJava = "http://localhost:8081/api/process"
         data = {
             'current_phoneNumber':  current_phoneNumber,
-            'message': message
+            'message': message,
+            'index': index,
+            'status': status
         }
+        print("current_phoneNumber", data['current_phoneNumber'])
+        print("status", data['status'])
         response = requests.post(urlJava, json=data)
 
     def run(self):
-        for phoneNumber in self.phoneNumbers:
-            self.sendProgress(phoneNumber, "Đang thực hiện")
+        for i, phoneNumber in enumerate(self.phoneNumbers, start=1):
+            check_resolve_captcha = True
+            self.sendProcess(phoneNumber, "Đang thực hiện", i, "Đang thực hiện")
+            self.stop()
+            if(self.finish):
+                self.close_browser(driver)
+                return "Đã kết thúc"
+            
             time.sleep(10)
+            # solve case pause program
             print("Working on phone number ", phoneNumber)
-            conti = None
             driver = None
             # solve byPass captcha
-            while True:
+            while True and self.action == 1:
                 driver = webdriver.Chrome(options=self.option) 
                 try:
-                    self.signupface(driver, phoneNumber)
+                    message = self.signupface(driver, phoneNumber)
+                    if(message != ""):
+                        return message
                     # click button continue if exists
                     time.sleep(20)
                     try:
@@ -75,13 +103,19 @@ class SignUp:
                         try:
                             # click continue when Bypass captcha success
                             time.sleep(30)
+                            self.stop()
+                            if(self.finish):
+                                self.close_browser(driver)
+                                return "Đã kết thúc"
+                            
                             # conti = WebDriverWait(driver, timeout=70).until(lambda d: d)
                             conti = driver.find_element(By.XPATH, '/html/body/div/div/div/div/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[1]/div/div/div/div/div/div/div/div[3]/div/div/div')
                             conti.click()
                             break
                         except NoSuchElementException: 
                             print('Can not ByPass captcha')
-                            self.sendProgress(phoneNumber, "Lỗi giải captcha sai!")
+                            self.sendProgress(phoneNumber, "Thất bại", i, "Lỗi giải captcha sai!")
+                            check_resolve_captcha = False
                             break
 
                     except NoSuchElementException:
@@ -93,13 +127,23 @@ class SignUp:
                 # Can not found any element in website
                 except NoSuchElementException : 
                     print('Error can not found element!')   
-                    driver.delete_all_cookies()
-                    driver.quit()
+                    self.close_browser(driver)
+            self.stop()
+            if(self.finish):
+                self.close_browser(driver)
+                return "Đã kết thúc"
+            # End While  
+            if(check_resolve_captcha == False):
+                self.close_browser(driver)
+                continue
 
-            # End While        
             # solve send SMS again
             time.sleep(10)
             try:
+                self.stop()
+                if(self.finish):
+                    self.close_browser(driver)
+                    return "Đã kết thúc"
                 sendSMSAgain = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div[1]/div/div/div[1]/div[2]/form/div[1]/div[3]/a')
                 sendSMSAgain.click()
             except NoSuchElementException:
@@ -108,6 +152,11 @@ class SignUp:
             # Resolve to re-enter the phone number and require send SMS
             time.sleep(10)
             try:
+                self.stop()
+                if(self.finish):
+                    self.close_browser(driver)
+                    return "Đã kết thúc"
+                
                 driver.find_element(By.XPATH, '/html/body/div/div/div/div/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[1]/div/div/div/div/div/div/div/div[2]/div/label/div/div[2]/input').send_keys(phoneNumber)
                 sendSMS = driver.find_element(By.XPATH, '/html/body/div/div/div/div/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[1]/div/div/div/div/div/div/div/div[4]/div/div/div')
                 print("Button Send SMS ", sendSMS)
@@ -116,8 +165,9 @@ class SignUp:
             except NoSuchElementException:
                 print("Check point error")
 
-            driver.delete_all_cookies()
-            driver.quit()
+            # wait SMS send to phoneNumber
+            time.sleep(60)
+            self.close_browser(driver)
     
 # fill out infor user
 def fillOutForm(driver, phoneNumber):   
