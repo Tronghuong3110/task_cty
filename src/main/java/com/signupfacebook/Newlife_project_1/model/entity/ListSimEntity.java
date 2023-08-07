@@ -14,6 +14,10 @@ public class ListSimEntity {
     private Date dateImport;
     @Column(name = "date_change")
     private Date dateChange;
+    @Column(name = "status")
+    private Integer status;
+    @Column(name = "note", columnDefinition = "ntext")
+    private String note;
 
 //    Relationship
     @OneToMany(mappedBy = "listSim")
@@ -60,5 +64,21 @@ public class ListSimEntity {
 
     public void setListConfig(List<ConfigEntity> listConfig) {
         this.listConfig = listConfig;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

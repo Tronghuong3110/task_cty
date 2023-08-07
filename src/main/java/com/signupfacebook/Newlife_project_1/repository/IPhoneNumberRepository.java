@@ -8,4 +8,5 @@ import java.util.*;
 @Repository
 public interface IPhoneNumberRepository extends JpaRepository<PhoneNumberEntity, String> {
     List<PhoneNumberEntity> findAllByListSim_Id(String listSimId);
+    Optional<PhoneNumberEntity> findByIdAndStatus(String id, Integer status);
 }

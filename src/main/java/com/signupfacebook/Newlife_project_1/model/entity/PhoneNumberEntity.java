@@ -16,6 +16,8 @@ public class PhoneNumberEntity {
     private Date createDate;
     @Column(name = "date_change")
     private Date changeDate;
+    @Column(name = "status")
+    private Integer status;
 
 //    Relation ship
     @OneToMany(mappedBy = "phoneNumberEntity")
@@ -71,5 +73,13 @@ public class PhoneNumberEntity {
 
     public void setListSim(ListSimEntity listSim) {
         this.listSim = listSim;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }
