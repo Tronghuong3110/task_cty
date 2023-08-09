@@ -1,8 +1,8 @@
 package com.signupfacebook.Newlife_project_1.controller;
 
 import com.signupfacebook.Newlife_project_1.model.dto.ProcessData;
-import com.signupfacebook.Newlife_project_1.model.entity.ConfigEntity;
-import com.signupfacebook.Newlife_project_1.model.entity.PhoneNumberEntity;
+import com.signupfacebook.Newlife_project_1.model.entity1.ConfigEntity;
+import com.signupfacebook.Newlife_project_1.model.entity1.PhoneNumberEntity;
 import com.signupfacebook.Newlife_project_1.service.IConfigService;
 import com.signupfacebook.Newlife_project_1.service.IProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RequestMapping(value = "api")
@@ -18,10 +20,10 @@ import java.util.*;
 public class HomeController {
 
     private final String PYTHON_API_START = "http://127.0.0.1:8000/api/start";
-    private final String PYTHON_API_FINISH = "http://127.0.0.1:8000/api/finish";
     private final String PYTHON_API_ACTION = "http://127.0.0.1:8000/api/action/";
     private ProcessData processData = null;
     private Integer totalPhoneNumber = null;
+    private Date time_send = null;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -49,10 +51,22 @@ public class HomeController {
         }
     }
 
-    @PostMapping("/process") // revice progress from api python
-    public void seviceProgress(@RequestBody ProcessData data) {
+    @PostMapping("/process") // receive progress from api python
+    public void receiveProgress(@RequestBody ProcessData data) {
         setData(data);
         System.out.print("Current PhoneNumber = " + processData.getCurrent_phoneNumber());
+    }
+
+    @PostMapping("/time_send") //receive time start send request to facebook from api python
+    public void reciveTimeSend(@RequestParam("time") String time) {
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            time_send = simpleDateFormat.parse(time);
+            System.out.print("Thời gian gửi: " + time_send);
+        }
+        catch (ParseException p) {
+            p.printStackTrace();
+        }
     }
 
     @GetMapping("/process_current") // send progress current to client
@@ -64,7 +78,7 @@ public class HomeController {
         return null;
     }
 
-    @GetMapping("/action")
+    @GetMapping("/action") // pause, continue, finish
     public String action(@RequestParam("action") String action) {
         String url = PYTHON_API_ACTION + "?action=";
         if(action.equals("pause")) {

@@ -1,6 +1,6 @@
 package com.signupfacebook.Newlife_project_1.service;
 
-import com.signupfacebook.Newlife_project_1.model.entity.ConfigEntity;
+import com.signupfacebook.Newlife_project_1.model.entity1.ConfigEntity;
 
 public interface IConfigService {
     String save(String profilePath, String idListSim);

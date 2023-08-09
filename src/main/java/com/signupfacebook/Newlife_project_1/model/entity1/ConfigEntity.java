@@ -1,4 +1,4 @@
-package com.signupfacebook.Newlife_project_1.model.entity;
+package com.signupfacebook.Newlife_project_1.model.entity1;
 
 import javax.persistence.*;
 

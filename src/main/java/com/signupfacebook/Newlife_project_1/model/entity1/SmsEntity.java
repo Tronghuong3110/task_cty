@@ -1,13 +1,28 @@
-package com.signupfacebook.Newlife_project_1.model.dto;
+package com.signupfacebook.Newlife_project_1.model.entity1;
 
-public class SmsDto {
+import javax.persistence.*;
 
+@Entity
+@Table(name = "Sms")
+public class SmsEntity {
+
+    @Id
     private String id;
+    @Column(name = "content")
     private String content;
+    @Column(name = "sender")
     private String sender;
+    @Column(name = "receiver")
     private String receiver;
+    @Column(name = "date_send", columnDefinition = "varchar(50)")
     private String date_send;
+    @Column(name = "date_receive", columnDefinition = "varchar(50)")
     private String date_receive;
+
+    // Relation ship
+    @ManyToOne
+    @JoinColumn(name = "phoneId")
+    private PhoneNumberEntity phoneNumberEntity;
 
     public String getId() {
         return id;
@@ -31,6 +46,14 @@ public class SmsDto {
 
     public void setSender(String sender) {
         this.sender = sender;
+    }
+
+    public PhoneNumberEntity getPhoneNumberEntity() {
+        return phoneNumberEntity;
+    }
+
+    public void setPhoneNumberEntity(PhoneNumberEntity phoneNumberEntity) {
+        this.phoneNumberEntity = phoneNumberEntity;
     }
 
     public String getDate_send() {

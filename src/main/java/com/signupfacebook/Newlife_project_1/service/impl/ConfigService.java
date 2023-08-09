@@ -1,9 +1,9 @@
 package com.signupfacebook.Newlife_project_1.service.impl;
 
-import com.signupfacebook.Newlife_project_1.model.entity.ConfigEntity;
-import com.signupfacebook.Newlife_project_1.model.entity.ListSimEntity;
-import com.signupfacebook.Newlife_project_1.repository.IConfigRepository;
-import com.signupfacebook.Newlife_project_1.repository.IListSimRepository;
+import com.signupfacebook.Newlife_project_1.model.entity1.ConfigEntity;
+import com.signupfacebook.Newlife_project_1.model.entity1.ListSimEntity;
+import com.signupfacebook.Newlife_project_1.repository.repository1.IConfigRepository;
+import com.signupfacebook.Newlife_project_1.repository.repository1.IListSimRepository;
 import com.signupfacebook.Newlife_project_1.service.IConfigService;
 import com.signupfacebook.Newlife_project_1.util.GenericUtil;
 import org.springframework.beans.factory.annotation.Autowired;

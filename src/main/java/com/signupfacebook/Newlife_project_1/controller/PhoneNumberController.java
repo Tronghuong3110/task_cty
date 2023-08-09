@@ -2,12 +2,11 @@ package com.signupfacebook.Newlife_project_1.controller;
 
 import com.signupfacebook.Newlife_project_1.model.dto.ListSimDto;
 import com.signupfacebook.Newlife_project_1.model.dto.PhoneNumberDto;
-import com.signupfacebook.Newlife_project_1.model.entity.ListSimEntity;
+import com.signupfacebook.Newlife_project_1.model.entity1.ListSimEntity;
 import com.signupfacebook.Newlife_project_1.service.IPhoneNumberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -20,12 +19,11 @@ public class PhoneNumberController {
 
     @Autowired
     private IPhoneNumberService phoneNumberService;
-    @Autowired
-    private RestTemplate restTemplate;
 
     @PostMapping("/file") // import list sim from file excel
-    public ListSimEntity importFile(@RequestParam("file") MultipartFile file){
-        ListSimEntity listSimEntity = phoneNumberService.ReadDataInExcelFile(file);
+    public ListSimEntity importFile(@RequestParam("file") MultipartFile file,
+                                    @RequestParam("name") String name){
+        ListSimEntity listSimEntity = phoneNumberService.ReadDataInExcelFile(file, name);
         return listSimEntity;
     }
 

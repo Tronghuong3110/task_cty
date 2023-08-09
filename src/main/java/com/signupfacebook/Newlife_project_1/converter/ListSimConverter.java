@@ -1,7 +1,7 @@
 package com.signupfacebook.Newlife_project_1.converter;
 
 import com.signupfacebook.Newlife_project_1.model.dto.ListSimDto;
-import com.signupfacebook.Newlife_project_1.model.entity.ListSimEntity;
+import com.signupfacebook.Newlife_project_1.model.entity1.ListSimEntity;
 import org.modelmapper.ModelMapper;
 
 import java.util.Date;

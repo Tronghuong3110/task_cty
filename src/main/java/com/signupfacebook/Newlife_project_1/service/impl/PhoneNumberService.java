@@ -4,10 +4,10 @@ import com.signupfacebook.Newlife_project_1.converter.ListSimConverter;
 import com.signupfacebook.Newlife_project_1.converter.PhoneNumberConverter;
 import com.signupfacebook.Newlife_project_1.model.dto.ListSimDto;
 import com.signupfacebook.Newlife_project_1.model.dto.PhoneNumberDto;
-import com.signupfacebook.Newlife_project_1.model.entity.ListSimEntity;
-import com.signupfacebook.Newlife_project_1.model.entity.PhoneNumberEntity;
-import com.signupfacebook.Newlife_project_1.repository.IListSimRepository;
-import com.signupfacebook.Newlife_project_1.repository.IPhoneNumberRepository;
+import com.signupfacebook.Newlife_project_1.model.entity1.ListSimEntity;
+import com.signupfacebook.Newlife_project_1.model.entity1.PhoneNumberEntity;
+import com.signupfacebook.Newlife_project_1.repository.repository1.IListSimRepository;
+import com.signupfacebook.Newlife_project_1.repository.repository1.IPhoneNumberRepository;
 import com.signupfacebook.Newlife_project_1.service.IPhoneNumberService;
 import com.signupfacebook.Newlife_project_1.util.GenericUtil;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -31,9 +31,10 @@ public class PhoneNumberService implements IPhoneNumberService {
     private IPhoneNumberRepository phoneNumberRepository;
 
     @Override
-    public ListSimEntity ReadDataInExcelFile(MultipartFile file) {
+    public ListSimEntity ReadDataInExcelFile(MultipartFile file, String name) {
         ListSimEntity listSimEntity = createListSim();
         listSimEntity.setStatus(1);
+        listSimEntity.setName(name);
         listSimEntity = listSimRepository.save(listSimEntity);
         try {
             ArrayList<PhoneNumberEntity> listPhoneNumber = new ArrayList<>();

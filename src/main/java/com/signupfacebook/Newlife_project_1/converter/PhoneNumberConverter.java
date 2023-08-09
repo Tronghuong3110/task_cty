@@ -1,7 +1,7 @@
 package com.signupfacebook.Newlife_project_1.converter;
 
 import com.signupfacebook.Newlife_project_1.model.dto.PhoneNumberDto;
-import com.signupfacebook.Newlife_project_1.model.entity.PhoneNumberEntity;
+import com.signupfacebook.Newlife_project_1.model.entity1.PhoneNumberEntity;
 import com.signupfacebook.Newlife_project_1.util.GenericUtil;
 import org.modelmapper.ModelMapper;
 

@@ -1,6 +1,6 @@
-package com.signupfacebook.Newlife_project_1.repository;
+package com.signupfacebook.Newlife_project_1.repository.repository1;
 
-import com.signupfacebook.Newlife_project_1.model.entity.ListSimEntity;
+import com.signupfacebook.Newlife_project_1.model.entity1.ListSimEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
