@@ -1,5 +1,6 @@
 import time
 import requests
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchFrameException
@@ -32,7 +33,7 @@ class SignUp:
             btnSignUp = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div/div/div[2]/div/div[1]/form/div[5]/a')
             btnSignUp.click() 
         except NoSuchElementException:
-            print("Can't found button create account")
+            print("Can not found button create account")
         time.sleep(10)
         # fillout form
         fillOutForm(driver, phoneNumber)
@@ -54,13 +55,20 @@ class SignUp:
             'index': index,
             'status': status
         }
-        print("current_phoneNumber", data['current_phoneNumber'])
-        print("status", data['status'])
+        print("current_phoneNumber: ", data['current_phoneNumber'])
+        print("status: ", data['status'])
         response = requests.post(urlJava, json=data)
+
+    def sendTimeSend(self):
+        urlJava = "http://localhost:8081/api/time_send"
+        time = datetime.now()
+        print(time.strftime("%d-%m-%Y %H:%M:%S"))
+        requests.post(urlJava, params={"time": time.strftime("%d-%m-%Y %H:%M:%S")})
 
     def run(self):
         for i, phoneNumber in enumerate(self.phoneNumbers, start=1):
             check_resolve_captcha = True
+            check_send_Sms = False
             self.sendProcess(phoneNumber, "Đang thực hiện", i, "Đang thực hiện")
             self.stop()
             if(self.finish):
@@ -111,10 +119,12 @@ class SignUp:
                             # conti = WebDriverWait(driver, timeout=70).until(lambda d: d)
                             conti = driver.find_element(By.XPATH, '/html/body/div/div/div/div/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[1]/div/div/div/div/div/div/div/div[3]/div/div/div')
                             conti.click()
+                            self.sendTimeSend() # Case bypass captcha success and can request facebook send SMS
+                            check_send_Sms = True
                             break
                         except NoSuchElementException: 
                             print('Can not ByPass captcha')
-                            self.sendProgress(phoneNumber, "Thất bại", i, "Lỗi giải captcha sai!")
+                            self.sendProcess(phoneNumber, "Thất bại", i, "Lỗi giải captcha sai!")
                             check_resolve_captcha = False
                             break
 
@@ -156,17 +166,19 @@ class SignUp:
                 if(self.finish):
                     self.close_browser(driver)
                     return "Đã kết thúc"
-                
                 driver.find_element(By.XPATH, '/html/body/div/div/div/div/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[1]/div/div/div/div/div/div/div/div[2]/div/label/div/div[2]/input').send_keys(phoneNumber)
                 sendSMS = driver.find_element(By.XPATH, '/html/body/div/div/div/div/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div[1]/div/div/div/div/div/div/div/div[4]/div/div/div')
                 print("Button Send SMS ", sendSMS)
                 sendSMS.click()
+                if(not check_send_Sms): # Case of checkpoint ==> send again phone number
+                    self.sendTimeSend()
                 # time.sleep(50)
             except NoSuchElementException:
                 print("Check point error")
 
             # wait SMS send to phoneNumber
-            time.sleep(60)
+            self.sendProcess(phoneNumber, "Đang chờ SMS", i, "")
+            time.sleep(120) # chờ 2 phút
             self.close_browser(driver)
     
 # fill out infor user
