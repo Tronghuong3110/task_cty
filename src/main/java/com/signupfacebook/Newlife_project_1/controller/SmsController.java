@@ -1,6 +1,7 @@
 package com.signupfacebook.Newlife_project_1.controller;
 
 import com.signupfacebook.Newlife_project_1.model.dto.SmsDto;
+import com.signupfacebook.Newlife_project_1.model.entity2.SmsEntity2;
 import com.signupfacebook.Newlife_project_1.service.ISmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,9 @@ public class SmsController {
     private ISmsService smsService;
 
     @GetMapping("/listSms")
-    public List<SmsDto> findAll(@RequestParam("dateSend") String dateSend,
-                                @RequestParam("dateReceive") String dateReceive,
-                                @RequestParam("receiver") String receiver) {
+    public List<SmsEntity2> findAll(@RequestParam("dateSend") String dateSend,
+                                    @RequestParam("dateReceive") String dateReceive,
+                                    @RequestParam("receiver") String receiver) {
         if(checkValue(dateSend, dateReceive, receiver)) {
             return smsService.findAllByDateSendAndDateReceiveAndReceiver(dateSend, dateReceive, receiver);
         }

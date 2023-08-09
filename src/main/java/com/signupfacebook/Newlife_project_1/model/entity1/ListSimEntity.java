@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Date;
 
 @Entity
-@Table(name = "listSim")
+@Table(name = "list_sim")
 public class ListSimEntity {
 
     @Id

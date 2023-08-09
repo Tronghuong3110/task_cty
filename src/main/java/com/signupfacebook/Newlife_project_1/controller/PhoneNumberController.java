@@ -5,6 +5,7 @@ import com.signupfacebook.Newlife_project_1.model.dto.PhoneNumberDto;
 import com.signupfacebook.Newlife_project_1.model.entity1.ListSimEntity;
 import com.signupfacebook.Newlife_project_1.service.IPhoneNumberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,11 @@ public class PhoneNumberController {
 
     @Autowired
     private IPhoneNumberService phoneNumberService;
+
+//    @Autowired
+//    public PhoneNumberController(@Qualifier("employeeEntityManagerFactory") IPhoneNumberService iPhoneNumberService) {
+//        this.phoneNumberService = iPhoneNumberService;
+//    }
 
     @PostMapping("/file") // import list sim from file excel
     public ListSimEntity importFile(@RequestParam("file") MultipartFile file,

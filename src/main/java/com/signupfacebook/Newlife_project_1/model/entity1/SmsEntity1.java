@@ -3,8 +3,8 @@ package com.signupfacebook.Newlife_project_1.model.entity1;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Sms")
-public class SmsEntity {
+@Table(name = "sms")
+public class SmsEntity1 {
 
     @Id
     private String id;

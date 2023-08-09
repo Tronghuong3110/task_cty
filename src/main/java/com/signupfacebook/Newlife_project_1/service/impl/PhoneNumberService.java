@@ -14,6 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,11 @@ public class PhoneNumberService implements IPhoneNumberService {
     private IListSimRepository listSimRepository;
     @Autowired
     private IPhoneNumberRepository phoneNumberRepository;
+
+//    @Autowired
+//    public PhoneNumberService(@Qualifier("employeeEntityManagerFactory") IPhoneNumberRepository iPhoneNumberRepository) {
+//        this.phoneNumberRepository = iPhoneNumberRepository;
+//    }
 
     @Override
     public ListSimEntity ReadDataInExcelFile(MultipartFile file, String name) {

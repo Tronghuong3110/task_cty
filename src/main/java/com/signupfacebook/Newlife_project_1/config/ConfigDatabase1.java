@@ -1,45 +1,53 @@
 package com.signupfacebook.Newlife_project_1.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
+@EnableTransactionManagement
 @EnableJpaRepositories(
         basePackages = "com.signupfacebook.Newlife_project_1.repository.repository1",
-        entityManagerFactoryRef = "firstEntityManagerFactory",
-        transactionManagerRef = "firstTransactionManager"
+        entityManagerFactoryRef = "employeeEntityManagerFactory",
+        transactionManagerRef = "employeeTransactionManager"
 )
 public class ConfigDatabase1 {
 
-    @Bean(name = "firstDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.first")
-    public DataSource firstDataSource() {
+    @Primary
+    @Bean(name = "dataSource1")
+    @ConfigurationProperties("spring.datasource.employee")
+    public DataSource dataSource1() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "firstEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean firstEntityManagerFactory(
+    @Primary
+    @Bean(name = "employeeEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory1(
             EntityManagerFactoryBuilder builder,
-            DataSource firstDataSource) {
-        return builder.dataSource(firstDataSource)
+            @Qualifier("dataSource1") DataSource dataSource) {
+        return builder
+                .dataSource(dataSource)
                 .packages("com.signupfacebook.Newlife_project_1.model.entity1")
                 .persistenceUnit("first")
                 .build();
     }
 
-    @Bean(name = "firstTransactionManager")
-    public PlatformTransactionManager firstTransactionManager(
-            EntityManagerFactory firstEntityManagerFactory) {
-        return new JpaTransactionManager(firstEntityManagerFactory);
+    @Primary
+    @Bean(name = "employeeTransactionManager")
+    public PlatformTransactionManager transactionManager1(
+            @Qualifier("employeeEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
     }
 }
