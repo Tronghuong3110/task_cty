@@ -1,27 +1,30 @@
 package com.signupfacebook.Newlife_project_1.model.entity1;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "sms")
+@Qualifier("employeeEntityManagerFactory")
 public class SmsEntity1 {
 
     @Id
     private String id;
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "ntext")
     private String content;
     @Column(name = "sender")
     private String sender;
     @Column(name = "receiver")
     private String receiver;
-    @Column(name = "date_send", columnDefinition = "varchar(50)")
+    @Column(name = "date_send", columnDefinition = "varchar(250)")
     private String date_send;
-    @Column(name = "date_receive", columnDefinition = "varchar(50)")
+    @Column(name = "date_receive", columnDefinition = "varchar(250)")
     private String date_receive;
 
     // Relation ship
     @ManyToOne
-    @JoinColumn(name = "phoneId")
+    @JoinColumn(name = "phone_id")
     private PhoneNumberEntity phoneNumberEntity;
 
     public String getId() {

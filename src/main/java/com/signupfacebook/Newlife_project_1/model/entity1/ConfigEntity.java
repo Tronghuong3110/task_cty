@@ -7,7 +7,8 @@ import javax.persistence.*;
 public class ConfigEntity {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(name = "profile_path")
     private String profilePath;
 
@@ -15,11 +16,11 @@ public class ConfigEntity {
     @JoinColumn(name = "id_list_sim")
     private ListSimEntity listSimEntity;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

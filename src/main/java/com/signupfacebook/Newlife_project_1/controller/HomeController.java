@@ -5,14 +5,18 @@ import com.signupfacebook.Newlife_project_1.model.entity1.ConfigEntity;
 import com.signupfacebook.Newlife_project_1.model.entity1.PhoneNumberEntity;
 import com.signupfacebook.Newlife_project_1.service.IConfigService;
 import com.signupfacebook.Newlife_project_1.service.IProcessService;
+import com.signupfacebook.Newlife_project_1.service.ISmsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @RequestMapping(value = "api")
 @RestController
@@ -21,9 +25,10 @@ public class HomeController {
 
     private final String PYTHON_API_START = "http://127.0.0.1:8000/api/start";
     private final String PYTHON_API_ACTION = "http://127.0.0.1:8000/api/action/";
+    private final ExecutorService executorService = Executors.newFixedThreadPool(2);
     private ProcessData processData = null;
     private Integer totalPhoneNumber = null;
-    private Date time_send = null;
+    private String time_send = null;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -31,9 +36,11 @@ public class HomeController {
     private IConfigService configService;
     @Autowired
     private IProcessService processService;
+    @Autowired
+    private ISmsService smsService;
 
     @GetMapping("/play") // start program
-    public String callPythonApi(@RequestParam("idConfig") String idConfig){
+    public String callPythonApi(@RequestParam("idConfig") Long idConfig){
         ConfigEntity configEntity = configService.findById(idConfig);
         try{
             List<Integer> listPhoneNumber = new ArrayList<>();
@@ -52,30 +59,49 @@ public class HomeController {
     }
 
     @PostMapping("/process") // receive progress from api python
-    public void receiveProgress(@RequestBody ProcessData data) {
-        setData(data);
-        System.out.print("Current PhoneNumber = " + processData.getCurrent_phoneNumber());
+    public ResponseEntity<String> receiveProgress(@RequestBody ProcessData data) {
+
+        CompletableFuture<Void> processingFuture = CompletableFuture.runAsync(() -> {
+            // Case success and wait SMS
+            setData(data);
+            if(data.getStatus().equals("")) {
+                try {
+                    Thread.sleep(10000);
+                    boolean checkSave = smsService.save(time_send, data.getCurrent_phoneNumber());
+                    setData(data);
+                    if(checkSave) {
+                        processData.setStatus("Thành công");
+                        processData.setMessage("Gửi SMS thành công");
+                    }
+                    else {
+                        processData.setStatus("Thất bại");
+                        processData.setMessage("Lỗi quá thời gian chờ");
+                    }
+                }
+                catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            System.out.print("Current PhoneNumber = " + processData.getCurrent_phoneNumber());
+        }, executorService);
+        return ResponseEntity.accepted().body("Success");
     }
 
     @PostMapping("/time_send") //receive time start send request to facebook from api python
-    public void reciveTimeSend(@RequestParam("time") String time) {
-        try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            time_send = simpleDateFormat.parse(time);
-            System.out.print("Thời gian gửi: " + time_send);
-        }
-        catch (ParseException p) {
-            p.printStackTrace();
-        }
+    public void receiveTimeSend(@RequestParam("time") String time) {
+        time_send = time;
     }
 
     @GetMapping("/process_current") // send progress current to client
-    public ProcessData procress_current() {
-        if(processData != null) {
-            ProcessData response = processService.sendProcess(processData, totalPhoneNumber);
-            return response;
-        }
-        return null;
+    public CompletableFuture<ResponseEntity<ProcessData>> process_current() {
+        CompletableFuture<ProcessData> processDataFuture = CompletableFuture.supplyAsync(() -> {
+            if(processData != null) {
+                ProcessData response = processService.sendProcess(processData, totalPhoneNumber);
+                return response;
+            }
+            return null;
+        }, executorService);
+        return processDataFuture.thenApply(processData -> ResponseEntity.ok(processData));
     }
 
     @GetMapping("/action") // pause, continue, finish

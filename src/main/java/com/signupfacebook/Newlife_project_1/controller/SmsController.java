@@ -16,7 +16,7 @@ public class SmsController {
     private ISmsService smsService;
 
     @GetMapping("/listSms")
-    public List<SmsEntity2> findAll(@RequestParam("dateSend") String dateSend,
+    public List<SmsDto> findAll(@RequestParam("dateSend") String dateSend,
                                     @RequestParam("dateReceive") String dateReceive,
                                     @RequestParam("receiver") String receiver) {
         if(checkValue(dateSend, dateReceive, receiver)) {

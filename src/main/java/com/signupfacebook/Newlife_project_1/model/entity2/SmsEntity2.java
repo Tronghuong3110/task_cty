@@ -1,5 +1,7 @@
 package com.signupfacebook.Newlife_project_1.model.entity2;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -7,6 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "sms")
+@Qualifier("companyEntityManagerFactory")
 public class SmsEntity2 {
 
     @Id

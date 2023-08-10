@@ -9,10 +9,17 @@ public class ProcessService implements IProcessService {
 
     @Override
     public ProcessData sendProcess(ProcessData data, Integer totalPhoneNumber) {
-        double percent = ((double)data.getIndex() / totalPhoneNumber) * 100;
-        percent = Math.floor(percent * 10) / 10;
-        String process = percent + "%";
-        data.setProcess(process);
-        return data;
+        try {
+            System.out.println("total = " + totalPhoneNumber);
+            double percent = ((double)data.getIndex() / totalPhoneNumber) * 100;
+            percent = Math.floor(percent * 10) / 10;
+            String process = percent + "%";
+            data.setProcess(process);
+            return data;
+        }
+        catch (NullPointerException nul) {
+            nul.printStackTrace();
+            return new ProcessData();
+        }
     }
 }

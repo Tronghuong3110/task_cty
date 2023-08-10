@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -45,8 +44,36 @@ public class SmsService implements ISmsService {
     }
 
     @Override
-    public String save(Date time_send) {
-        return null;
+    public boolean save(String time_send, String sender) {
+        time_send = time_send.trim();
+        List<SmsEntity2> listSms = smsRepository2.findBySenderIdAndReceivedTime(sender,
+                                                    time_send.replace('-', '.')
+                                                    .substring(0, time_send.lastIndexOf(" ")));
+
+        System.out.println(time_send.replace('-', '.')
+                .substring(0, time_send.lastIndexOf(" ")));
+
+        List<SmsEntity1> listSmsResponse = new ArrayList<>();
+        if(listSms.size() <= 0) {
+            return false;
+        }
+        else {
+            for(SmsEntity2 entity2 : listSms) {
+                SmsEntity1 entity1 = new SmsEntity1();
+                entity1.setDate_send(time_send);
+                entity1 = SmsConverter.toEntity1(entity2, entity1);
+                System.out.println("content = " + entity2.getContent());
+                if(entity1 != null && entity2.getContent() != null) {
+                    listSmsResponse.add(entity1);
+                }
+            }
+            if(listSmsResponse.size() <= 0) {
+                return false;
+            }
+
+            listSmsResponse = smsRepository.saveAll(listSmsResponse);
+            return true;
+        }
     }
 
 }

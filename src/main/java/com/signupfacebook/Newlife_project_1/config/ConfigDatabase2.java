@@ -2,6 +2,7 @@ package com.signupfacebook.Newlife_project_1.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -19,6 +20,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
+@EntityScan(basePackages = "com.signupfacebook.Newlife_project_1.model.entity2")
 @EnableTransactionManagement
 @EnableJpaRepositories(
         basePackages = "com.signupfacebook.Newlife_project_1.repository.repository2",
@@ -27,7 +29,6 @@ import javax.sql.DataSource;
 )
 
 public class ConfigDatabase2 {
-
 
     @Bean(name = "dataSource2")
     @ConfigurationProperties("spring.datasource.company")

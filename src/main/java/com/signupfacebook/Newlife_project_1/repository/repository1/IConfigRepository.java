@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Qualifier("employeeEntityManagerFactory")
-public interface IConfigRepository extends JpaRepository<ConfigEntity, String>{
+public interface IConfigRepository extends JpaRepository<ConfigEntity, Long>{
 }
