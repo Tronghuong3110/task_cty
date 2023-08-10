@@ -5,6 +5,7 @@ import java.util.*;
 public class ListSimDto {
 
     private String id;
+    private String name;
     private Date dateImport;
     private Date dateChange;
     private Integer status;
@@ -66,5 +67,13 @@ public class ListSimDto {
 
     public void setListPhoneNumber(List<PhoneNumberDto> listPhoneNumber) {
         this.listPhoneNumber = listPhoneNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

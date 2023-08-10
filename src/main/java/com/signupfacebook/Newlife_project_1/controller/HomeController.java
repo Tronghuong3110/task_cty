@@ -26,7 +26,7 @@ public class HomeController {
     private final String PYTHON_API_START = "http://127.0.0.1:8000/api/start";
     private final String PYTHON_API_ACTION = "http://127.0.0.1:8000/api/action/";
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
-    private ProcessData processData = null;
+    private ProcessData processData = new ProcessData();
     private Integer totalPhoneNumber = null;
     private String time_send = null;
 
@@ -63,26 +63,31 @@ public class HomeController {
 
         CompletableFuture<Void> processingFuture = CompletableFuture.runAsync(() -> {
             // Case success and wait SMS
-            setData(data);
             if(data.getStatus().equals("")) {
+                System.out.print("status " + data.getStatus());
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(100000);
                     boolean checkSave = smsService.save(time_send, data.getCurrent_phoneNumber());
+                    System.out.println("checkSave " + checkSave);
                     setData(data);
                     if(checkSave) {
-                        processData.setStatus("Thành công");
-                        processData.setMessage("Gửi SMS thành công");
+                        this.processData.setStatus("Thành công");
+                        this.processData.setMessage("Gửi SMS thành công");
                     }
                     else {
-                        processData.setStatus("Thất bại");
-                        processData.setMessage("Lỗi quá thời gian chờ");
+                        this.processData.setStatus("Thất bại");
+                        this.processData.setMessage("Lỗi quá thời gian chờ");
                     }
                 }
                 catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
+                System.out.print("Current PhoneNumber = " + processData.getCurrent_phoneNumber());
             }
-            System.out.print("Current PhoneNumber = " + processData.getCurrent_phoneNumber());
+            else {
+                setData(data);
+            }
+
         }, executorService);
         return ResponseEntity.accepted().body("Success");
     }
@@ -95,11 +100,8 @@ public class HomeController {
     @GetMapping("/process_current") // send progress current to client
     public CompletableFuture<ResponseEntity<ProcessData>> process_current() {
         CompletableFuture<ProcessData> processDataFuture = CompletableFuture.supplyAsync(() -> {
-            if(processData != null) {
-                ProcessData response = processService.sendProcess(processData, totalPhoneNumber);
-                return response;
-            }
-            return null;
+            processData = processService.sendProcess(processData, totalPhoneNumber);
+            return processData;
         }, executorService);
         return processDataFuture.thenApply(processData -> ResponseEntity.ok(processData));
     }

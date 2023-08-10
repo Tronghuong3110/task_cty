@@ -10,7 +10,6 @@ public class ProcessService implements IProcessService {
     @Override
     public ProcessData sendProcess(ProcessData data, Integer totalPhoneNumber) {
         try {
-            System.out.println("total = " + totalPhoneNumber);
             double percent = ((double)data.getIndex() / totalPhoneNumber) * 100;
             percent = Math.floor(percent * 10) / 10;
             String process = percent + "%";

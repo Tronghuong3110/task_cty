@@ -45,19 +45,16 @@ public class SmsService implements ISmsService {
 
     @Override
     public boolean save(String time_send, String sender) {
-        time_send = time_send.trim();
-        List<SmsEntity2> listSms = smsRepository2.findBySenderIdAndReceivedTime(sender,
-                                                    time_send.replace('-', '.')
-                                                    .substring(0, time_send.lastIndexOf(" ")));
+        try {
+            time_send = time_send.trim();
+            List<SmsEntity2> listSms = smsRepository2.findBySenderIdAndReceivedTime(sender,
+                    time_send.replace('-', '.')
+                            .substring(0, time_send.lastIndexOf(" ")));
 
-        System.out.println(time_send.replace('-', '.')
-                .substring(0, time_send.lastIndexOf(" ")));
-
-        List<SmsEntity1> listSmsResponse = new ArrayList<>();
-        if(listSms.size() <= 0) {
-            return false;
-        }
-        else {
+            List<SmsEntity1> listSmsResponse = new ArrayList<>();
+            if(listSms.size() <= 0) {
+                return false;
+            }
             for(SmsEntity2 entity2 : listSms) {
                 SmsEntity1 entity1 = new SmsEntity1();
                 entity1.setDate_send(time_send);
@@ -73,6 +70,10 @@ public class SmsService implements ISmsService {
 
             listSmsResponse = smsRepository.saveAll(listSmsResponse);
             return true;
+        }
+        catch (NullPointerException e ) {
+            e.printStackTrace();
+            return false;
         }
     }
 
