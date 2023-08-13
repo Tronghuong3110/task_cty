@@ -16,8 +16,13 @@ public class ListSimConverter {
 
     public static ListSimEntity toEntity(ListSimDto listSimDto, ListSimEntity listSimEntity) {
         try {
-            if (!listSimDto.getNote().equals(listSimEntity.getNote())) {
+            System.out.print("Node " + listSimDto.getNote());
+            System.out.print("Node " + listSimEntity.getNote());
+            if (listSimDto.getNote() != null && !listSimDto.getNote().equals(listSimEntity.getNote())) {
                 listSimEntity.setNote(listSimDto.getNote());
+            }
+            if (listSimDto.getName() != null && !listSimDto.getName().equals(listSimEntity.getName())) {
+                listSimEntity.setName(listSimDto.getName());
             }
             listSimEntity.setDateChange(new Date());
             return listSimEntity;

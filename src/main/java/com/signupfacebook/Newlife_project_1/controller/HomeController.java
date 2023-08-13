@@ -7,7 +7,6 @@ import com.signupfacebook.Newlife_project_1.service.IConfigService;
 import com.signupfacebook.Newlife_project_1.service.IProcessService;
 import com.signupfacebook.Newlife_project_1.service.ISmsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -16,16 +15,16 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 @RequestMapping(value = "api")
 @RestController
 @CrossOrigin(origins = "*")
 public class HomeController {
 
-    private final String PYTHON_API_START = "http://127.0.0.1:8000/api/start";
-    private final String PYTHON_API_ACTION = "http://127.0.0.1:8000/api/action/";
-    private final ExecutorService executorService = Executors.newFixedThreadPool(2);
+    private final String PYTHON_API_START = "http://127.0.0.1:8888/api/start";
+    private final String PYTHON_API_ACTION = "http://127.0.0.1:8888/api/action/";
+    private ExecutorService executorService = Executors.newFixedThreadPool(2);
+    private String actions = null;
     private ProcessData processData = new ProcessData();
     private Integer totalPhoneNumber = null;
     private String time_send = null;
@@ -41,8 +40,8 @@ public class HomeController {
 
     @GetMapping("/play") // start program
     public String callPythonApi(@RequestParam("idConfig") Long idConfig){
-        ConfigEntity configEntity = configService.findById(idConfig);
         try{
+            ConfigEntity configEntity = configService.findById(idConfig);
             List<Integer> listPhoneNumber = new ArrayList<>();
             List<PhoneNumberEntity> numberList = configEntity.getListSimEntity().getListPhoneNumber();
             for(PhoneNumberEntity phoneNumberEntity : numberList) {
@@ -53,7 +52,8 @@ public class HomeController {
             ResponseEntity<Object> res = restTemplate.getForEntity(urlApi, Object.class);
             return res.toString();
         }
-        catch(NullPointerException nul) {
+        catch(Exception e) {
+            e.printStackTrace();
             return "Bạn chưa thực hiện cấu hình";
         }
     }
@@ -65,16 +65,22 @@ public class HomeController {
             // Case success and wait SMS
             if(data.getStatus().equals("")) {
                 System.out.print("status " + data.getStatus());
+                pause();
+                setData(data);
                 try {
                     Thread.sleep(100000);
                     boolean checkSave = smsService.save(time_send, data.getCurrent_phoneNumber());
                     System.out.println("checkSave " + checkSave);
-                    setData(data);
+                    pause();
                     if(checkSave) {
+                        if(this.totalPhoneNumber.equals(processData.getIndex()))
+                            this.processData.setCheck(true);
                         this.processData.setStatus("Thành công");
                         this.processData.setMessage("Gửi SMS thành công");
                     }
                     else {
+                        if(this.totalPhoneNumber.equals(processData.getIndex()))
+                            this.processData.setCheck(true);
                         this.processData.setStatus("Thất bại");
                         this.processData.setMessage("Lỗi quá thời gian chờ");
                     }
@@ -100,8 +106,11 @@ public class HomeController {
     @GetMapping("/process_current") // send progress current to client
     public CompletableFuture<ResponseEntity<ProcessData>> process_current() {
         CompletableFuture<ProcessData> processDataFuture = CompletableFuture.supplyAsync(() -> {
-            processData = processService.sendProcess(processData, totalPhoneNumber);
-            return processData;
+            ProcessData response = processService.sendProcess(processData, totalPhoneNumber);
+            if(response.getStatus().equals("Thất bại") && this.totalPhoneNumber.equals(response.getIndex())) {
+                response.setCheck(true);
+            }
+            return response;
         }, executorService);
         return processDataFuture.thenApply(processData -> ResponseEntity.ok(processData));
     }
@@ -111,13 +120,16 @@ public class HomeController {
         String url = PYTHON_API_ACTION + "?action=";
         if(action.equals("pause")) {
             ResponseEntity<String> response = restTemplate.getForEntity(url + action, String.class);
+            this.actions = action;
             return response.toString();
         }
         else if(action.equals("continue")) {
             ResponseEntity<String> response = restTemplate.getForEntity(url + action, String.class);
+            this.actions = null;
             return response.toString();
         }
         else {
+            this.actions = null;
             ResponseEntity<String> response = restTemplate.getForEntity(url + action, String.class);
         }
         return null;
@@ -129,6 +141,18 @@ public class HomeController {
         processData.setIndex(data.getIndex());
         processData.setMessage(data.getMessage());
         processData.setStatus(data.getStatus());
+        processData.setCheck(false);
         processData.setTotalPhoneNumber(totalPhoneNumber);
+    }
+
+    private void pause() {
+        while (this.actions != null) {
+            try {
+                Thread.sleep(3000);
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

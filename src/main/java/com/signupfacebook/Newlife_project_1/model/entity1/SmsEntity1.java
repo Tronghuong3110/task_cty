@@ -22,11 +22,6 @@ public class SmsEntity1 {
     @Column(name = "date_receive", columnDefinition = "varchar(250)")
     private String date_receive;
 
-    // Relation ship
-    @ManyToOne
-    @JoinColumn(name = "phone_id")
-    private PhoneNumberEntity phoneNumberEntity;
-
     public String getId() {
         return id;
     }
@@ -49,14 +44,6 @@ public class SmsEntity1 {
 
     public void setSender(String sender) {
         this.sender = sender;
-    }
-
-    public PhoneNumberEntity getPhoneNumberEntity() {
-        return phoneNumberEntity;
-    }
-
-    public void setPhoneNumberEntity(PhoneNumberEntity phoneNumberEntity) {
-        this.phoneNumberEntity = phoneNumberEntity;
     }
 
     public String getDate_send() {

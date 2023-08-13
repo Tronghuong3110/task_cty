@@ -4,8 +4,10 @@ import com.signupfacebook.Newlife_project_1.converter.ListSimConverter;
 import com.signupfacebook.Newlife_project_1.converter.PhoneNumberConverter;
 import com.signupfacebook.Newlife_project_1.model.dto.ListSimDto;
 import com.signupfacebook.Newlife_project_1.model.dto.PhoneNumberDto;
+import com.signupfacebook.Newlife_project_1.model.entity1.ConfigEntity;
 import com.signupfacebook.Newlife_project_1.model.entity1.ListSimEntity;
 import com.signupfacebook.Newlife_project_1.model.entity1.PhoneNumberEntity;
+import com.signupfacebook.Newlife_project_1.repository.repository1.IConfigRepository;
 import com.signupfacebook.Newlife_project_1.repository.repository1.IListSimRepository;
 import com.signupfacebook.Newlife_project_1.repository.repository1.IPhoneNumberRepository;
 import com.signupfacebook.Newlife_project_1.service.IPhoneNumberService;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import sun.security.krb5.Config;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,11 +33,8 @@ public class PhoneNumberService implements IPhoneNumberService {
     private IListSimRepository listSimRepository;
     @Autowired
     private IPhoneNumberRepository phoneNumberRepository;
-
-//    @Autowired
-//    public PhoneNumberService(@Qualifier("employeeEntityManagerFactory") IPhoneNumberRepository iPhoneNumberRepository) {
-//        this.phoneNumberRepository = iPhoneNumberRepository;
-//    }
+    @Autowired
+    private IConfigRepository configRepository;
 
     @Override
     public ListSimEntity ReadDataInExcelFile(MultipartFile file, String name) {
@@ -67,25 +67,33 @@ public class PhoneNumberService implements IPhoneNumberService {
     }
 
     @Override
-    public List<PhoneNumberDto> findAllPhoneNumberByListSimId(String listSimId) {
-        List<PhoneNumberEntity> listPhoneNumber = phoneNumberRepository.findAllByListSim_Id(listSimId);
-        List<PhoneNumberDto> listResult = new ArrayList<>();
-        for(PhoneNumberEntity phoneNumberEntity : listPhoneNumber) {
-            listResult.add(PhoneNumberConverter.toDto(phoneNumberEntity));
-        }
-        return listResult;
+    public ListSimDto findAllPhoneNumberByListSimId(String listSimId) {
+        ListSimEntity listSimEntity = listSimRepository.findByIdAndStatus(listSimId, 1)
+                .orElse(null);
+        return ListSimConverter.toDto(listSimEntity);
     }
 
     @Override
     public String deleteListSim(List<String> ids) {
-        List<ListSimEntity> listSimEntities = new ArrayList<>();
+        List<PhoneNumberEntity> listPhoneNumber = new ArrayList<>();
+        List<ConfigEntity> listConfig = new ArrayList<>();
         for(String id : ids) {
-            ListSimEntity listSimEntity = listSimRepository.findByIdAndStatus(id, 1)
-                    .orElse(null);
-            listSimEntity.setStatus(0);
-            listSimEntities.add(listSimEntity);
+            try {
+                listPhoneNumber = phoneNumberRepository.findAllByListSim_Id(id);
+                for(PhoneNumberEntity phoneNumberEntity : listPhoneNumber) {
+                    phoneNumberRepository.deleteById(phoneNumberEntity.getId());
+                }
+                listConfig = configRepository.findById_List_Sim(id);
+                for(ConfigEntity configEntity : listConfig) {
+                    configRepository.deleteById(configEntity.getId());
+                }
+                listSimRepository.deleteById(id);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return "Can not delete list sim " + id;
+            }
         }
-        listSimRepository.saveAll(listSimEntities);
         return "success";
     }
 
@@ -102,7 +110,7 @@ public class PhoneNumberService implements IPhoneNumberService {
     }
 
     @Override
-    public String updatePhoneNumber(ListSimDto listSimDto) {
+    public List<PhoneNumberDto> updatePhoneNumber(ListSimDto listSimDto) {
         try {
             ListSimEntity listSimEntity = listSimRepository.findByIdAndStatus(listSimDto.getId(), 1)
                     .orElse(null);
@@ -110,44 +118,48 @@ public class PhoneNumberService implements IPhoneNumberService {
             listSimEntity = listSimRepository.save(listSimEntity);
 
             List<PhoneNumberDto> listPhoneNumber = listSimDto.getListPhoneNumber();
-            for(PhoneNumberDto phoneNumberDto : listPhoneNumber) {
-                System.out.println(phoneNumberDto.getId());
-                PhoneNumberEntity phoneNumberEntity = null;
-                if(phoneNumberDto.getId() == null) {
-                    phoneNumberEntity = PhoneNumberConverter.toEntity(phoneNumberDto);
-                    phoneNumberEntity.setListSim(listSimEntity);
+            List<PhoneNumberEntity> listPhoneNumberEntity = new ArrayList<>();
+            if(listPhoneNumber != null) {
+                for(PhoneNumberDto phoneNumberDto : listPhoneNumber) {
+                    PhoneNumberEntity phoneNumberEntity = null;
+                    if(phoneNumberDto.getId() == null) {
+                        phoneNumberEntity = PhoneNumberConverter.toEntity(phoneNumberDto);
+                        phoneNumberEntity.setListSim(listSimEntity);
+                    }
+                    else {
+                        phoneNumberEntity = phoneNumberRepository.findById(phoneNumberDto.getId())
+                                .orElse(null);
+                        phoneNumberEntity = PhoneNumberConverter.toEntity(phoneNumberDto, phoneNumberEntity);
+                    }
+                    phoneNumberRepository.save(phoneNumberEntity);
                 }
-                else {
-                    phoneNumberEntity = phoneNumberRepository.findById(phoneNumberDto.getId())
-                            .orElse(null);
-                    phoneNumberEntity = PhoneNumberConverter.toEntity(phoneNumberDto, phoneNumberEntity);
-                }
-                phoneNumberRepository.save(phoneNumberEntity);
             }
-            return "Success";
+            listPhoneNumberEntity = phoneNumberRepository.findAllByListSim_Id(listSimDto.getId());
+            List<PhoneNumberDto> responses = new ArrayList<>();
+            for(PhoneNumberEntity phoneNumberEntity : listPhoneNumberEntity) {
+                responses.add(PhoneNumberConverter.toDto(phoneNumberEntity));
+            }
+            System.out.println("Số lượng số điện thoại: " + responses.size());
+            return responses;
         }
         catch (Exception e) {
             e.printStackTrace();
-            return "Can not change phone number of list sim " + listSimDto.getId();
+            return new ArrayList<>();
         }
     }
 
     @Override
     public String deletePhoneNumber(List<String> ids) {
-        try {
-            List<PhoneNumberEntity> listPhoneNumber = new ArrayList<>();
-            for(String id : ids) {
-                PhoneNumberEntity phoneNumberEntity = phoneNumberRepository.findByIdAndStatus(id, 1)
-                        .orElse(null);
-                phoneNumberEntity.setStatus(0);
-                listPhoneNumber.add(phoneNumberEntity);
+        for(String id : ids) {
+            try {
+                phoneNumberRepository.deleteById(id);
             }
-            phoneNumberRepository.saveAll(listPhoneNumber);
-            return "success";
+            catch (Exception e) {
+                e.printStackTrace();
+                return "Can not delete phone number";
+            }
         }
-        catch (NullPointerException nu) {
-            return "Can not delete phone number";
-        }
+        return "success";
      }
 
     private void print(ArrayList<PhoneNumberEntity> listPhoneNumber) {

@@ -9,9 +9,9 @@ import java.util.*;
 
 public interface IPhoneNumberService {
     ListSimEntity ReadDataInExcelFile(MultipartFile file, String name);
-    List<PhoneNumberDto> findAllPhoneNumberByListSimId(String listSimId);
+    ListSimDto findAllPhoneNumberByListSimId(String listSimId);
     String deleteListSim(List<String> ids);
     List<ListSimDto> findAllByStatus();
-    String updatePhoneNumber(ListSimDto listSimDto);
+    List<PhoneNumberDto> updatePhoneNumber(ListSimDto listSimDto);
     String deletePhoneNumber(List<String> ids);
 }

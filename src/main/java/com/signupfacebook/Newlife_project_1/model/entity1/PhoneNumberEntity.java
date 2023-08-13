@@ -19,10 +19,6 @@ public class PhoneNumberEntity {
     @Column(name = "status")
     private Integer status;
 
-//    Relation ship
-    @OneToMany(mappedBy = "phoneNumberEntity")
-    List<SmsEntity1> listSms;
-
     @ManyToOne
     @JoinColumn(name = "list_sim_id")
     private ListSimEntity listSim;
@@ -57,14 +53,6 @@ public class PhoneNumberEntity {
 
     public void setChangeDate(Date changeDate) {
         this.changeDate = changeDate;
-    }
-
-    public List<SmsEntity1> getListSms() {
-        return listSms;
-    }
-
-    public void setListSms(List<SmsEntity1> listSms) {
-        this.listSms = listSms;
     }
 
     public ListSimEntity getListSim() {

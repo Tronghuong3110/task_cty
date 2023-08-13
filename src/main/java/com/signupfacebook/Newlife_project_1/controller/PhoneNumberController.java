@@ -21,11 +21,6 @@ public class PhoneNumberController {
     @Autowired
     private IPhoneNumberService phoneNumberService;
 
-//    @Autowired
-//    public PhoneNumberController(@Qualifier("employeeEntityManagerFactory") IPhoneNumberService iPhoneNumberService) {
-//        this.phoneNumberService = iPhoneNumberService;
-//    }
-
     @PostMapping("/file") // import list sim from file excel
     public ListSimEntity importFile(@RequestParam("file") MultipartFile file,
                                     @RequestParam("name") String name){
@@ -34,26 +29,29 @@ public class PhoneNumberController {
     }
 
     @GetMapping("/phoneNumber/list") // get list phone number of list sim
-    public List<PhoneNumberDto> findAll(@RequestParam("id") String id) {
+    public ListSimDto findAll(@RequestParam("id") String id) {
         return phoneNumberService.findAllPhoneNumberByListSimId(id);
     }
 
-    @DeleteMapping("/listSim") // delete list sim
+    @DeleteMapping("/listsim") // delete list sim
     public String deleteListSim(@RequestHeader List<String> ids) {
         String message = phoneNumberService.deleteListSim(ids);
         return message;
     }
 
-    @GetMapping("/listSim")
+    @GetMapping("/listsim")
     public List<ListSimDto> findAll() {
         List<ListSimDto> results = phoneNumberService.findAllByStatus();
         return results;
     }
 
-    @PutMapping("/listSim")
+    @PutMapping("/listsim")
     public ResponseEntity<?> updateListSim(@RequestBody ListSimDto listSimDto) {
-        String message = phoneNumberService.updatePhoneNumber(listSimDto);
-        return ResponseEntity.ok(message);
+        List<PhoneNumberDto> responses = phoneNumberService.updatePhoneNumber(listSimDto);
+        for(PhoneNumberDto phoneNumberDto : responses) {
+            System.out.println(phoneNumberDto.getPhoneNumber());
+        }
+        return ResponseEntity.ok(responses);
     }
 
     @DeleteMapping("/phoneNumber")

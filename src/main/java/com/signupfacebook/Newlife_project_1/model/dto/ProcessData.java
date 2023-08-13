@@ -7,6 +7,7 @@ public class ProcessData {
     private Integer index;
     private String status;
     private String process;
+    private boolean check;
     private Integer totalPhoneNumber;
 
     public String getCurrent_phoneNumber() {
@@ -55,5 +56,13 @@ public class ProcessData {
 
     public void setTotalPhoneNumber(Integer totalPhoneNumber) {
         this.totalPhoneNumber = totalPhoneNumber;
+    }
+
+    public boolean isCheck() {
+        return check;
+    }
+
+    public void setCheck(boolean check) {
+        this.check = check;
     }
 }
