@@ -8,5 +8,5 @@ class Option:
     def createOption(self):
         option = ChromeOptions()
         option.add_argument("--user-data-dir=" + self.profilePath)
-        option.add_argument("--profile-directory=Default")
+        option.add_argument("--profile-directory=20")
         return option

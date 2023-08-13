@@ -18,6 +18,7 @@ def main(profilePath: str, listPhoneNumber: str):
     option = options.createOption()
     signupFace.setValue(phoneNumbers, option, 1)
     message = signupFace.run()
+    print ("message ", message)
     # signupFace.printPhoneNumber()
     return message
 
@@ -33,5 +34,5 @@ def pause(action:str):
         signupFace.finish = True
 
 if __name__ == '__main__':
-    uvicorn.run(app, host='127.0.0.1', port=8000)  # Định nghĩa cổng 8000
+    uvicorn.run(app, host='127.0.0.1', port=8888)  # Định nghĩa cổng 8000
 

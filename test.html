@@ -30,19 +30,20 @@
                 var formData = new FormData();
                 formData.append('file', $("#file_input")[0].files[0]);
                 formData.append('name', $("#name").val())
-                $.ajax({
-                    url: "http://localhost:8081/api/file", 
-                    type: "POST",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        alert("File uploaded successfully.");
-                    },
-                    error: function(xhr, status, message) {
-                       alert("Error uploading file.");
-                    }
-                });
+                console.log($("#file_input")[0].files[0])
+                // $.ajax({
+                //     url: "http://localhost:8081/api/file", 
+                //     type: "POST",
+                //     data: formData,
+                //     contentType: false,
+                //     processData: false,
+                //     success: function(response) {
+                //         alert("File uploaded successfully.");
+                //     },
+                //     error: function(xhr, status, message) {
+                //        alert("Error uploading file.");
+                //     }
+                // });
             });
             // $.get("http://localhost:8081/api/progress_current", (data, status) => {
             //     $(".text").html(`
