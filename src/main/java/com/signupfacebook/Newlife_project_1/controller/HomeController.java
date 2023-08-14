@@ -24,7 +24,7 @@ public class HomeController {
     private final String PYTHON_API_START = "http://127.0.0.1:8888/api/start";
     private final String PYTHON_API_ACTION = "http://127.0.0.1:8888/api/action/";
     private ExecutorService executorService = Executors.newFixedThreadPool(2);
-    private String actions = null;
+    private String actions = "continue";
     private ProcessData processData = new ProcessData();
     private Integer totalPhoneNumber = null;
     private String time_send = null;
@@ -62,36 +62,38 @@ public class HomeController {
     public ResponseEntity<String> receiveProgress(@RequestBody ProcessData data) {
 
         CompletableFuture<Void> processingFuture = CompletableFuture.runAsync(() -> {
-            // Case success and wait SMS
-            if(data.getStatus().equals("")) {
-                System.out.print("status " + data.getStatus());
-                pause();
-                setData(data);
-                try {
-                    Thread.sleep(100000);
-                    boolean checkSave = smsService.save(time_send, data.getCurrent_phoneNumber());
-                    System.out.println("checkSave " + checkSave);
+            if(!actions.equals("pause") && !actions.equals("finish")) {
+                // Case success and wait SMS
+                if(data.getStatus().equals("")) {
+                    System.out.print("status " + data.getStatus());
                     pause();
-                    if(checkSave) {
-                        if(this.totalPhoneNumber.equals(processData.getIndex()))
-                            this.processData.setCheck(true);
-                        this.processData.setStatus("Thành công");
-                        this.processData.setMessage("Gửi SMS thành công");
+                    setData(data);
+                    try {
+                        Thread.sleep(100000);
+                        boolean checkSave = smsService.save(time_send, data.getCurrent_phoneNumber());
+                        System.out.println("checkSave " + checkSave);
+                        pause();
+                        if(checkSave) {
+                            if(this.totalPhoneNumber.equals(processData.getIndex()))
+                                this.processData.setCheck(true);
+                            this.processData.setStatus("Thành công");
+                            this.processData.setMessage("Gửi SMS thành công");
+                        }
+                        else {
+                            if(this.totalPhoneNumber.equals(processData.getIndex()))
+                                this.processData.setCheck(true);
+                            this.processData.setStatus("Thất bại");
+                            this.processData.setMessage("Lỗi quá thời gian chờ");
+                        }
                     }
-                    else {
-                        if(this.totalPhoneNumber.equals(processData.getIndex()))
-                            this.processData.setCheck(true);
-                        this.processData.setStatus("Thất bại");
-                        this.processData.setMessage("Lỗi quá thời gian chờ");
+                    catch (InterruptedException ex) {
+                        ex.printStackTrace();
                     }
+                    System.out.print("Current PhoneNumber = " + processData.getCurrent_phoneNumber());
                 }
-                catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                else {
+                    setData(data);
                 }
-                System.out.print("Current PhoneNumber = " + processData.getCurrent_phoneNumber());
-            }
-            else {
-                setData(data);
             }
 
         }, executorService);
@@ -110,6 +112,9 @@ public class HomeController {
             if(response.getStatus().equals("Thất bại") && this.totalPhoneNumber.equals(response.getIndex())) {
                 response.setCheck(true);
             }
+            if(this.actions.equals("finish")) {
+                response.setCheck(true);
+            }
             return response;
         }, executorService);
         return processDataFuture.thenApply(processData -> ResponseEntity.ok(processData));
@@ -118,18 +123,16 @@ public class HomeController {
     @GetMapping("/action") // pause, continue, finish
     public String action(@RequestParam("action") String action) {
         String url = PYTHON_API_ACTION + "?action=";
+        this.actions = action;
         if(action.equals("pause")) {
             ResponseEntity<String> response = restTemplate.getForEntity(url + action, String.class);
-            this.actions = action;
             return response.toString();
         }
         else if(action.equals("continue")) {
             ResponseEntity<String> response = restTemplate.getForEntity(url + action, String.class);
-            this.actions = null;
             return response.toString();
         }
         else {
-            this.actions = null;
             ResponseEntity<String> response = restTemplate.getForEntity(url + action, String.class);
         }
         return null;
@@ -146,7 +149,7 @@ public class HomeController {
     }
 
     private void pause() {
-        while (this.actions != null) {
+        while (this.actions.equals("pause")) {
             try {
                 Thread.sleep(3000);
             }
