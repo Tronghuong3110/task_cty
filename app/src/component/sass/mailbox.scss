@@ -1,0 +1,171 @@
+$primary-color : #152036;
+$secondary-color : #1b2a47;
+$green-color : #24c79f;
+$yellow-color : #D0DC45;
+$red-color : #CC3F3F;
+
+.header{
+    width: 100%;
+    background-color: $secondary-color;
+    display: flex;
+    padding: 20px;
+    &-symbol{
+        border: white solid 2px;
+        border-radius: 7px;
+        i{
+            font-size: 2rem;
+            padding: 10px;
+        }
+    }
+    &-text{
+        font-size: 2rem;
+        color: white;
+        padding-left: 16px;
+    }
+}
+main{
+    padding : 20px !important;
+    margin-top: 40px;
+    background-color: $secondary-color;
+
+    .searcher{
+        form{
+            width: 100%;
+        }
+        &-inputDate{
+            width: 20%;
+            input{
+                width: 100%;
+                border-radius: 22px;
+                padding: 7px 14px;
+                // width: 117%;
+                background-color: $primary-color;
+                color: white !important;
+                border: 2px solid $green-color;
+                &:focus{
+                    outline: none;
+                    border-color: $green-color;
+                    box-shadow: 0 0 10px $green-color;
+                }
+            }
+        }
+        &-inputTel{
+            width: 30%;
+            position: relative;
+            input{
+                width: 100%;
+                border-radius: 22px;
+                padding: 7px 0px 7px 40px;
+                // width: 117%;
+                background-color: $primary-color;
+                color: white !important;
+                border: 2px solid $green-color;
+                &:focus{
+                    outline: none;
+                    border-color: $green-color;
+                    box-shadow: 0 0 10px $green-color;
+                }
+            }
+            i{
+                position: absolute;
+                left: 18px;
+                color: $green-color;
+            }
+        }
+        &-btn{
+            width: 7%;
+            background-color:  $green-color;
+            border-radius: 5px;
+            display: flex;
+            place-items: center;
+            padding : 0 10px;
+            justify-content: center;
+            .btn{
+                width: 100%;
+                border: none;
+            }
+        }
+    }
+    table{
+        table-layout: fixed;
+        thead{
+            tr{
+                height: 20px;
+                th{
+                    background-color: $secondary-color !important ;
+                    color: white !important;
+                    border-top: $green-color 1px solid !important;
+                    border-bottom: none !important;
+                    height: 40px;
+                }
+                .col-1 {
+                    width: 5% !important;
+                }
+                .col-2 {
+                    width: 20% !important;
+                }
+                .col-3 {
+                    width: 20% !important;
+                }
+                .col-4 {
+                    width: 20% !important;
+                }
+                .col-5 {
+                    width: 20% !important;
+                }
+                .col-6 {
+                    div{
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        &:hover{
+                            white-space: unset;
+                            overflow:auto;
+                            text-overflow: ellipsis
+                        }
+                    }
+                }
+            }
+        }
+        tbody{
+            tr{
+                height: 20px;
+                td{
+                    background-color: $secondary-color !important;
+                    color: white !important;
+                    border-top: $green-color 1px solid !important;
+                    border-bottom: none !important;
+                    height: 40px;
+                    word-wrap: break-word;
+                }
+                .col-1 {
+                    width: 5% !important;
+                }
+                .col-2 {
+                    width: 20% !important;
+                }
+                .col-3 {
+                    width:20% !important;
+                }
+                .col-4 {
+                    width: 20% !important;
+                }
+                .col-5 {
+                    width: 20% !important;
+                }
+                .col-6 {
+                    div{
+                        text-align: left;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        &:hover{
+                            cursor: pointer;
+                            white-space: unset;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

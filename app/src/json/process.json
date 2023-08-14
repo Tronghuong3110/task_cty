@@ -1,0 +1,12 @@
+{
+    "process":
+        {
+            "id" : "process-1",
+            "current_phoneNumber": "0987112212",
+            "status": "Thanh cong",
+            "message": "This is message",
+            "process": "10%",
+            "index": 2,
+            "totalPhoneNumber": 20
+        }
+}

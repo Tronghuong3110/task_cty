@@ -1,0 +1,34 @@
+{
+    "listSim":{
+        "id": "ls1",
+        "name": "Danh sach 1",
+        "listPhoneNumber": [
+            {
+                "id": "sdt1",
+                "phoneNumber": "0987654321"
+            },
+            {
+                "id": "sdt2",
+                "phoneNumber": "0981233333"
+            },
+            {
+                "id": "sdt3",
+                "phoneNumber": "1123354321"
+            },
+            {
+                "id": "sdt4",
+                "phoneNumber": "0987142321"
+            },
+            {
+                "id": "sdt5",
+                "phoneNumber": "0933654321"
+            },
+            {
+                "id": "sdt6",
+                "phoneNumber": "123123123"
+            }
+        ],
+        "totalPhoneNumber": 10,
+        "note" : "Quan trong"
+    }
+}

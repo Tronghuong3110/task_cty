@@ -1,0 +1,275 @@
+$primary-color: #152036;
+$secondary-color: #1b2a47;
+$green-color: #24c79f;
+$yellow-color: #d0dc45;
+$red-color: #cc3f3f;
+.header {
+    width: 100%;
+    background-color: $secondary-color;
+    display: flex;
+    padding: 20px;
+    &-symbol {
+        border: white solid 2px;
+        border-radius: 7px;
+        i {
+            font-size: 2rem;
+            padding: 10px;
+        }
+    }
+    &-text {
+        font-size: 2rem;
+        color: white;
+        padding-left: 16px;
+    }
+}
+main {
+    padding: 20px !important;
+    margin-top: 40px;
+    background-color: $secondary-color;
+
+    .searcher {
+        form {
+            width: 100%;
+            .uploadFile {
+                input[type="file"] {
+                    display: none;
+                }
+                .custom-file-upload {
+                    border: 2px solid $green-color;
+                    display: inline-block;
+                    padding: 7px 14px;
+                    cursor: pointer;
+                    color: $green-color;
+                    border-radius: 22px;
+                }
+            }
+        }
+        &-inputTel {
+            width: 50%;
+            position: relative;
+            input {
+                width: 100%;
+                border-radius: 22px;
+                padding: 7px 0px 7px 40px;
+                // width: 117%;
+                background-color: $primary-color;
+                color: white !important;
+                border: 2px solid $green-color;
+                &:focus {
+                    outline: none;
+                    border-color: $green-color;
+                    box-shadow: 0 0 10px $green-color;
+                }
+            }
+        }
+        button {
+            width: 15%;
+            border: 2px solid $green-color;
+            border-radius: 5px;
+            background-color: transparent;
+            height: 100%;
+            color: white;
+            -webkit-transition: background-color 0.5s ease-out;
+            -moz-transition: background-color 0.5s ease-out;
+            -o-transition: background-color 0.5s ease-out;
+            transition: background-color 0.5s ease-out;
+            &:hover {
+                background-color: $green-color;
+                cursor: pointer;
+            }
+        }
+    }
+    table {
+        thead {
+            tr {
+                th {
+                    background-color: $secondary-color !important ;
+                    color: white !important;
+                    border-top: $green-color 1px solid !important;
+                    border-bottom: none !important;
+                    button {
+                        outline: none;
+                        background: transparent;
+                        color: white;
+                        border: none;
+                        font-weight: 700;
+                    }
+                }
+            }
+        }
+        tbody {
+            tr {
+                td {
+                    background-color: $secondary-color !important;
+                    color: white !important;
+                    border-top: $green-color 1px solid !important;
+                    border-bottom: none !important;
+                    .action-btn {
+                        background-color: transparent;
+                        margin: 0 5px;
+                    }
+                }
+            }
+        }
+    }
+}
+.sub-container {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    .editCard {
+        background-color: $secondary-color;
+        width: 33%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 10px 30px 30px 30px;
+        color: white;
+        border-radius: 20px;
+        &-delete {
+            text-align: end;
+            button {
+                background-color: transparent;
+                border-radius: 50%;
+                i {
+                    font-size: 1.2rem;
+                    vertical-align: middle;
+                }
+            }
+        }
+        &-name {
+            text-align: start;
+            label {
+                font-size: 1.5rem;
+            }
+            input {
+                margin: 15px 0;
+                width: 100%;
+                border-radius: 15px;
+                padding: 7px 0px 7px 20px;
+                background-color: #152036;
+                color: white !important;
+                border: 2px solid #24c79f;
+                &:focus {
+                    outline: none;
+                    border-color: $green-color;
+                    box-shadow: 0 0 10px $green-color;
+                }
+            }
+        }
+        &-list {
+            text-align: start;
+            label {
+                font-size: 1.5rem;
+            }
+            &-searchOrAdd {
+                input {
+                    margin: 15px 0;
+                    width: 80%;
+                    border-radius: 15px;
+                    border-top-right-radius: 0px;
+                    border-bottom-right-radius: 0px;
+                    padding: 7px 0px 7px 20px;
+                    background-color: #152036;
+                    color: white !important;
+                    border: 2px solid #24c79f;
+                    border-right: none;
+                    box-sizing: border-box;
+                    &:focus {
+                        outline: none;
+                        border-color: $green-color;
+                        box-shadow: 0 0 10px $green-color;
+                    }
+                }
+                button {
+                    box-sizing: border-box;
+                    width: 20%;
+                    border-radius: 15px;
+                    border-top-left-radius: 0px;
+                    border-bottom-left-radius: 0px;
+                    padding: 7px 0;
+                    border: 2px solid #24c79f;
+                    background-color: #24c79f;
+                    color: white;
+                }
+            }
+            &-table {
+                width: 100%;
+                height: 200px;
+                overflow-y: scroll;
+                // border: 2px solid $green-color;
+                table {
+                    thead,
+                    tbody {
+                        tr {
+                            th,
+                            td {
+                                background-color: $primary-color;
+                                color: white;
+                                padding: 3px;
+                                border: 2px solid $green-color;
+                                input {
+                                    background-color: transparent;
+                                    color: white;
+                                    border: none;
+                                    outline: none;
+                                    outline-offset: none;
+                                    text-align: center;
+                                }
+                                button {
+                                    background-color: transparent;
+                                    outline-offset: none;
+                                    outline: none;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        &-note {
+            text-align: start;
+            label {
+                font-size: 1.5rem;
+                margin: 15px 0;
+            }
+            textarea {
+                border: 2px solid $green-color;
+                background-color: $primary-color;
+                max-height: 100px;
+                width: 100%;
+                color: white;
+                &:focus {
+                    outline: none;
+                    border-color: $green-color;
+                    box-shadow: 0 0 10px $green-color;
+                }
+            }
+        }
+        &-save {
+            text-align: end;
+            margin-top: 10px;
+            button {
+                padding: 3px 10px;
+                background-color: $primary-color;
+                color: white;
+                border: 2px solid $green-color;
+                border-radius: 10px;
+                &:hover {
+                    background-color: #24c79f;
+                }
+                i {
+                    padding-right: 10px;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,96 @@
+$primary-color : #152036;
+$secondary-color : #1b2a47;
+$green-color : #24c79f;
+$yellow-color : #D0DC45;
+$red-color : #CC3F3F;
+.header{
+    width: 100%;
+    background-color: $secondary-color;
+    display: flex;
+    padding: 20px;
+    &-symbol{
+        border: white solid 2px;
+        border-radius: 7px;
+        i{
+            font-size: 2rem;
+            padding: 10px;
+        }
+    }
+    &-text{
+        font-size: 2rem;
+        color: white;
+        padding-left: 16px;
+    }
+}
+main{
+    padding : 20px !important;
+    margin-top: 40px;
+    background-color: $secondary-color;
+    .btns-container{
+        .btn-container{
+            &-red{
+                background-color: transparent;
+                padding: 10px;
+                border-radius: 50%;
+                box-shadow: 0 4px 8px 0 rgba(204, 63, 63,0.2), 0 6px 20px 0 rgba(204, 63, 63,0.2);
+
+            }
+            &-green{
+                background-color: transparent;
+                padding: 10px;
+                border-radius: 50%;
+                box-shadow: 0 4px 8px 0 rgba(36, 199, 159,0.2), 0 6px 20px 0 rgba(36, 199, 159,0.2);
+
+            }
+            &-yellow{
+                background-color: transparent;
+                padding: 10px;
+                border-radius: 50%;
+                box-shadow: 0 4px 8px 0  rgba(208, 220, 69,0.2), 0 6px 20px 0 rgba(208, 220, 69,0.2);
+            }
+        }
+    }
+    .progress-container{
+        .progress{
+            position: relative;
+            height: 25px;
+            &-bar{
+                background-color: $green-color;
+            }
+            &-text{
+                position: absolute;
+                left: 75%;
+                transform: translateX(-50%);
+                font-size: initial;
+                font-weight: 600;
+                color: #152036;
+            }
+        }
+    }
+    table{
+        thead{
+            tr{
+                th{
+                    background-color: $secondary-color !important ;
+                    color: white !important;
+                    border-top: $green-color 1px solid !important;
+                    border-bottom: none !important;
+                }
+            }
+        }
+        tbody{
+            tr{
+                td{
+                    background-color: $secondary-color !important;
+                    color: white !important;
+                    border-top: $green-color 1px solid !important;
+                    border-bottom: none !important;
+                    .action-btn{
+                        background-color: transparent;
+                        margin : 0 5px;
+                    }
+                }
+            }
+        }
+    }
+}

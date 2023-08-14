@@ -1,0 +1,26 @@
+$primary-color : #152036;
+$secondary-color : #1b2a47;
+$green-color : #24c79f;
+$yellow-color : #D0DC45;
+$red-color : #CC3F3F;
+html,body{
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100%;
+    width: 100%;
+    background-color: $primary-color !important;
+}
+section,.container, .row{
+    max-width: 100vw !important;
+    height: 100%;
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    .col-lg-2{
+        padding:0 !important;
+        margin:0
+    }
+    .col-lg-10{
+        padding: 30px !important;
+    }
+}
