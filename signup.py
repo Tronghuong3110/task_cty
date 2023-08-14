@@ -17,7 +17,7 @@ class SignUp:
         self.finish = False
 
     def stop(self):
-        while(self.action != 1):
+        while(self.action != 1 and self.finish == False):
             time.sleep(5)
 
     def close_browser(self, driver):
@@ -83,16 +83,16 @@ class SignUp:
 
     def run(self):
         for i, phoneNumber in enumerate(self.phoneNumbers, start=1):
-            if(self.finish == True):
-                return "Đã kết thúc"
+            # if(self.finish == True):
+            #     return "Đã kết thúc"
             check_resolve_captcha = True
             check_send_Sms = False
             message = ""
             self.stop()
-            self.sendProcess(phoneNumber, "Đang thực hiện", i, "Đang thực hiện")
             if(self.finish == True):
                 self.close_browser(driver)
                 return "Đã kết thúc"
+            self.sendProcess(phoneNumber, "Đang thực hiện", i, "Đang thực hiện")
             print("Working on phone number ", phoneNumber)
             driver = None
             # solve byPass captcha
@@ -205,6 +205,9 @@ class SignUp:
             self.sendTimeSend()
             self.sendProcess(phoneNumber, "Đang chờ SMS", i, "")
             self.stop()
+            if(self.finish == True):
+                self.close_browser(driver)
+                return "Đã kết thúc"
             time.sleep(120) # chờ 2 phút
             self.close_browser(driver)
         return "Đã hoàn thành"
