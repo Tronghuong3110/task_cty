@@ -64,35 +64,41 @@ public class HomeController {
         CompletableFuture<Void> processingFuture = CompletableFuture.runAsync(() -> {
             if(!actions.equals("pause") && !actions.equals("finish")) {
                 // Case success and wait SMS
-                if(data.getStatus().equals("")) {
-                    System.out.print("status " + data.getStatus());
-                    pause();
-                    setData(data);
-                    try {
-                        Thread.sleep(100000);
-                        boolean checkSave = smsService.save(time_send, data.getCurrent_phoneNumber());
-                        System.out.println("checkSave " + checkSave);
+                try {
+                    Thread.sleep(2000);
+                    if(data.getStatus().equals("")) {
+                        System.out.print("status " + data.getStatus());
                         pause();
-                        if(checkSave) {
-                            if(this.totalPhoneNumber.equals(processData.getIndex()))
-                                this.processData.setCheck(true);
-                            this.processData.setStatus("Thành công");
-                            this.processData.setMessage("Gửi SMS thành công");
+                        setData(data);
+                        try {
+                            Thread.sleep(100000);
+                            boolean checkSave = smsService.save(time_send, data.getCurrent_phoneNumber());
+                            System.out.println("checkSave " + checkSave);
+                            pause();
+                            if(checkSave) {
+                                if(this.totalPhoneNumber.equals(processData.getIndex()))
+                                    this.processData.setCheck(true);
+                                this.processData.setStatus("Thành công");
+                                this.processData.setMessage("Gửi SMS thành công");
+                            }
+                            else {
+                                if(this.totalPhoneNumber.equals(processData.getIndex()))
+                                    this.processData.setCheck(true);
+                                this.processData.setStatus("Thất bại");
+                                this.processData.setMessage("Lỗi quá thời gian chờ");
+                            }
                         }
-                        else {
-                            if(this.totalPhoneNumber.equals(processData.getIndex()))
-                                this.processData.setCheck(true);
-                            this.processData.setStatus("Thất bại");
-                            this.processData.setMessage("Lỗi quá thời gian chờ");
+                        catch (InterruptedException ex) {
+                            ex.printStackTrace();
                         }
+                        System.out.print("Current PhoneNumber = " + processData.getCurrent_phoneNumber());
                     }
-                    catch (InterruptedException ex) {
-                        ex.printStackTrace();
+                    else {
+                        setData(data);
                     }
-                    System.out.print("Current PhoneNumber = " + processData.getCurrent_phoneNumber());
                 }
-                else {
-                    setData(data);
+                catch (InterruptedException e ) {
+                    e.printStackTrace();
                 }
             }
 
